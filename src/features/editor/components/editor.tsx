@@ -8,6 +8,7 @@ import { Sidebar } from "@/features/editor/components/sidebar";
 import { Toolbar } from "@/features/editor/components/toolbar";
 import { Footer } from "@/features/editor/components/footer";
 import { ActiveTool } from "@/features/editor/types";
+import ShapeSidebar from "./shapeSidebar";
 
 export const Editor = () => {
   const [activeTool, setActiveTool] = useState<ActiveTool>("select");
@@ -31,7 +32,7 @@ export const Editor = () => {
     [activeTool]
   );
 
-  const { init } = useEditor();
+  const { init, editor } = useEditor();
 
   const canvasRef = useRef(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,6 +61,12 @@ export const Editor = () => {
           activeTool={activeTool}
           onChangeActiveTool={onChangeActiveTool}
         />
+        <ShapeSidebar
+          editor={editor}
+          activeTool={activeTool}
+          onChangeActiveTool={onChangeActiveTool}
+        />
+
         <main className="bg-muted flex-1 overflow-auto relative flex flex-col">
           <Toolbar />
           <div
