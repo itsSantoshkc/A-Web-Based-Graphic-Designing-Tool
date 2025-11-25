@@ -14,8 +14,17 @@ import {
   TRIANGLE_OPTION,
 } from "../types";
 import useCanvasEvents from "./use-canvas-events";
+import { isTextType } from "../utils";
 
-const buildEditor = ({ canvas }: BuildEditorProps): Editor => {
+const buildEditor = ({
+  canvas,
+  fillColor,
+  setFillColor,
+  setStrokeColor,
+  setStrokeWidth,
+  strokeColor,
+  strokeWidth,
+}: BuildEditorProps): Editor => {
   const getWorkSpace = () => {
     return canvas.getObjects().find((object) => object.name === "clip");
   };
@@ -34,21 +43,51 @@ const buildEditor = ({ canvas }: BuildEditorProps): Editor => {
     canvas.setActiveObject(object);
   };
   return {
+    changeStrokeColor: (value: string) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        if (isTextType(obj.type)) {
+          obj.set({ fill: value });
+          return;
+        }
+        obj.set({ stroke: value });
+      });
+    },
+    changeStrokeWidth: (value: number) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        obj.set({ strokeWidth: value });
+      });
+    },
+    changeFillColor: (value: string) => {
+      setFillColor(value);
+      canvas.getActiveObjects().forEach((obj) => {
+        obj.set({ fill: value });
+      });
+      canvas.renderAll();
+    },
     addCircle: () => {
       const object = new fabric.Circle({
         ...CIRCLE_OPTIONS,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: strokeWidth,
       });
       addToCanvas(object);
     },
     addSquare: () => {
       const object = new fabric.Rect({
         ...SQUARE_OPTIONS,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: strokeWidth,
       });
       addToCanvas(object);
     },
     addSquareFull() {
       const object = new fabric.Rect({
         ...SQUARE_OPTIONS,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: strokeWidth,
         rx: 50,
         ry: 50,
       });
@@ -57,12 +96,18 @@ const buildEditor = ({ canvas }: BuildEditorProps): Editor => {
     addTriangle() {
       const object = new fabric.Triangle({
         ...TRIANGLE_OPTION,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: strokeWidth,
       });
       addToCanvas(object);
     },
     addInvertedTriangle() {
       const object = new fabric.Triangle({
         ...TRIANGLE_OPTION,
+        fill: fillColor,
+        stroke: strokeColor,
+        strokeWidth: strokeWidth,
         flipY: true,
       });
       addToCanvas(object);
@@ -78,10 +123,19 @@ const buildEditor = ({ canvas }: BuildEditorProps): Editor => {
           { x: WIDTH / 2, y: HEIGHT },
           { x: 0, y: HEIGHT / 2 },
         ],
-        { ...DIAMOND_OPTIONS }
+        {
+          ...DIAMOND_OPTIONS,
+          fill: fillColor,
+          stroke: strokeColor,
+          strokeWidth: strokeWidth,
+        }
       );
       addToCanvas(object);
     },
+    fillColor,
+    strokeColor,
+    strokeWidth,
+    canvas,
   };
 };
 
