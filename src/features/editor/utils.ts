@@ -10,5 +10,5 @@ export function rgbaObjectToString(rgba: RGBColor | "transparent") {
   }
   const alpha = rgba.a === undefined ? 1 : rgba.a;
 
-  return `rgba(${rgba.a},${rgba.g},${rgba.b},${alpha})`;
+  return `rgba(${rgba.r},${rgba.g},${rgba.b},${alpha})`;
 }
