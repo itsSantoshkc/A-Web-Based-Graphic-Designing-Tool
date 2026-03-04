@@ -22,7 +22,7 @@
     "material-colors": "^1.2.6",
     "next": "^14.2.33",
     "react": "^18",
-    "react-color": "^2.19.3",
+    "react-colorful": "^5.6.1",
     "react-dom": "^18",
     "react-icons": "^5.2.1",
     "tailwind-merge": "^2.3.0",

@@ -1,6 +1,6 @@
-import { ChromePicker, CirclePicker } from "react-color";
+import { HexColorPicker } from "react-colorful";
 import { colors } from "../types";
-import { rgbaObjectToString } from "../utils";
+import { hexToRgba, rgbaToHex } from "../utils";
 
 interface ColorPickerProps {
   value: string;
@@ -8,25 +8,25 @@ interface ColorPickerProps {
 }
 
 export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
-  console.log(value);
+  const hexValue = value.startsWith("rgba") ? rgbaToHex(value) : value;
+
   return (
     <div className="w-full space-y-4">
-      <ChromePicker
-        color={value}
-        onChange={(color) => {
-          const formattedValue = rgbaObjectToString(color.rgb);
-          onChange(formattedValue);
-        }}
-        className="border rounded-lg"
+      <HexColorPicker
+        color={hexValue}
+        onChange={(hex) => onChange(hexToRgba(hex))}
+        style={{ width: "100%" }}
       />
-      <CirclePicker
-        color={value}
-        colors={colors}
-        onChangeComplete={(color) => {
-          const formattedValue = rgbaObjectToString(color.rgb);
-          onChange(formattedValue);
-        }}
-      />
+      <div className="flex flex-wrap gap-2">
+        {colors.map((color) => (
+          <button
+            key={color}
+            style={{ backgroundColor: color }}
+            className="w-6 h-6 rounded-full border border-gray-200 cursor-pointer hover:scale-110 transition-transform"
+            onClick={() => onChange(hexToRgba(color))}
+          />
+        ))}
+      </div>
     </div>
   );
 };

@@ -22,6 +22,19 @@ export const colors = [
   "transparent",
 ];
 
+export type EditorHookProps = {
+  clearSelectionCallback?: () => void;
+};
+
+export const selectionDependentTools = [
+  "fill",
+  "font",
+  "filter",
+  "opacity",
+  "remove-bg",
+  "stroke-color",
+  "stroke-width",
+];
 export type ActiveTool =
   | "select"
   | "shapes"
@@ -43,7 +56,7 @@ export type BuildEditorProps = {
   canvas: fabric.Canvas;
   fillColor: string;
   strokeColor: string;
-
+  selectedObjects: fabric.Object[];
   strokeWidth: number;
   setFillColor: (value: string) => void;
   setStrokeColor: (value: string) => void;
@@ -97,8 +110,11 @@ export interface Editor {
   addTriangle: () => void;
   addInvertedTriangle: () => void;
   addDiamond: () => void;
+  getActiveStrokeColor: () => string;
+  getActiveFillColor: () => string;
   fillColor: string;
   strokeColor: string;
   strokeWidth: number;
+  selectedObjects: fabric.Object[];
   canvas: fabric.Canvas;
 }

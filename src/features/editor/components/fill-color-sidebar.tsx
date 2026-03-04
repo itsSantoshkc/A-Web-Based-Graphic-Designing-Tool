@@ -21,13 +21,13 @@ const FillColorSidebar = ({
     editor?.changeFillColor(value);
   };
 
-  const value = editor?.fillColor || FILL_COLOR;
+  const value = editor?.getActiveFillColor() || FILL_COLOR;
 
   return (
     <aside
       className={cn(
         "bg-white relative border-r z-40 w-[360px] h-full flex flex-col",
-        activeTool === "fill" ? "visible" : "hidden"
+        activeTool === "fill" ? "visible" : "hidden",
       )}
     >
       <ToolSidebarHeader

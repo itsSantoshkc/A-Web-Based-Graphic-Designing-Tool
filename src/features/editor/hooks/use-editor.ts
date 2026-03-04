@@ -7,6 +7,7 @@ import {
   CIRCLE_OPTIONS,
   DIAMOND_OPTIONS,
   Editor,
+  EditorHookProps,
   FILL_COLOR,
   SQUARE_OPTIONS,
   STROKE_COLOR,
@@ -24,6 +25,7 @@ const buildEditor = ({
   setStrokeWidth,
   strokeColor,
   strokeWidth,
+  selectedObjects,
 }: BuildEditorProps): Editor => {
   const getWorkSpace = () => {
     return canvas.getObjects().find((object) => object.name === "clip");
@@ -44,6 +46,7 @@ const buildEditor = ({
   };
   return {
     changeStrokeColor: (value: string) => {
+      setStrokeColor(value);
       canvas.getActiveObjects().forEach((obj) => {
         if (isTextType(obj.type)) {
           obj.set({ fill: value });
@@ -51,6 +54,7 @@ const buildEditor = ({
         }
         obj.set({ stroke: value });
       });
+      canvas.renderAll();
     },
     changeStrokeWidth: (value: number) => {
       canvas.getActiveObjects().forEach((obj) => {
@@ -128,18 +132,37 @@ const buildEditor = ({
           fill: fillColor,
           stroke: strokeColor,
           strokeWidth: strokeWidth,
-        }
+        },
       );
       addToCanvas(object);
     },
     fillColor,
     strokeColor,
     strokeWidth,
+    selectedObjects,
+
+    getActiveStrokeColor: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return strokeColor;
+      }
+      const value = selectedObject.get("stroke") || strokeColor;
+      return value as string;
+    },
+    getActiveFillColor: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return fillColor;
+      }
+      const value = selectedObject.get("fill") || fillColor;
+      return value as string;
+    },
+
     canvas,
   };
 };
 
-export const useEditor = () => {
+export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
@@ -152,6 +175,7 @@ export const useEditor = () => {
   useCanvasEvents({
     canvas,
     setSelectedObjects,
+    clearSelectionCallback,
   });
 
   const editor = useMemo(() => {
@@ -164,10 +188,11 @@ export const useEditor = () => {
         setStrokeColor,
         strokeWidth,
         setStrokeWidth,
+        selectedObjects,
       });
     }
     return undefined;
-  }, [canvas, fillColor, strokeColor, strokeWidth]);
+  }, [canvas, fillColor, strokeColor, strokeWidth, selectedObjects]);
 
   const init = useCallback(
     ({
@@ -210,7 +235,7 @@ export const useEditor = () => {
       setCanvas(initialCanvas);
       setContainer(initialContainer);
     },
-    []
+    [],
   );
 
   return { init, editor };
