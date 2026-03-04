@@ -54,20 +54,23 @@ export type ActiveTool =
 
 export type BuildEditorProps = {
   canvas: fabric.Canvas;
-  fillColor: string;
-  strokeColor: string;
   selectedObjects: fabric.Object[];
-  strokeWidth: number;
-  strokeDashArray: number[];
+  fillColor: string;
   setFillColor: (value: string) => void;
+  strokeColor: string;
   setStrokeColor: (value: string) => void;
+  strokeWidth: number;
   setStrokeWidth: (value: number) => void;
+  strokeDashArray: number[];
   setStrokeDashArray: (value: number[]) => void;
+  opacity: number;
+  setOpacity: (value: number) => void;
 };
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
 export const STROKE_WIDTH = 2;
+export const OPACITY = 1;
 export const STROKE_DASH_ARRAY = [];
 
 export const CIRCLE_OPTIONS = {
@@ -104,10 +107,8 @@ export const DIAMOND_OPTIONS = {
   angle: 0,
 };
 export interface Editor {
-  changeStrokeColor: (value: string) => void;
-  changeStrokeWidth: (value: number) => void;
-  changeFillColor: (value: string) => void;
-  changeStrokeDashArray: (value: number[]) => void;
+  bringForwards: () => void;
+  sendBackwards: () => void;
   addCircle: () => void;
   addSquare: () => void;
   addSquareFull: () => void;
@@ -118,9 +119,16 @@ export interface Editor {
   getActiveStrokeColor: () => string;
   getActiveStrokeWidth: () => number;
   getActiveStrokeDashArray: () => number[];
+  getActiveOpacity: () => number;
+  changeStrokeColor: (value: string) => void;
+  changeStrokeWidth: (value: number) => void;
+  changeFillColor: (value: string) => void;
+  changeStrokeDashArray: (value: number[]) => void;
+  changeOpacity: (value: number) => void;
   fillColor: string;
   strokeColor: string;
   strokeWidth: number;
+  opacity: number;
   selectedObjects: fabric.Object[];
   canvas: fabric.Canvas;
 }

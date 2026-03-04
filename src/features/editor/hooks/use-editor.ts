@@ -9,6 +9,7 @@ import {
   Editor,
   EditorHookProps,
   FILL_COLOR,
+  OPACITY,
   SQUARE_OPTIONS,
   STROKE_COLOR,
   STROKE_DASH_ARRAY,
@@ -29,6 +30,8 @@ const buildEditor = ({
   setStrokeWidth,
   strokeDashArray,
   setStrokeDashArray,
+  opacity,
+  setOpacity,
 }: BuildEditorProps): Editor => {
   const getWorkSpace = () => {
     return canvas.getObjects().find((object) => object.name === "clip");
@@ -48,6 +51,29 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    changeOpacity: (value: number) => {
+      setOpacity(value);
+      canvas.getActiveObjects().forEach((obj) => {
+        obj.set({ opacity: value });
+      });
+      canvas.renderAll();
+    },
+    bringForwards: () => {
+      canvas.getActiveObjects().forEach((obj) => {
+        canvas.bringForward(obj);
+      });
+      canvas.renderAll();
+      const workspace = getWorkSpace();
+      workspace?.sendToBack();
+    },
+    sendBackwards: () => {
+      canvas.getActiveObjects().forEach((obj) => {
+        canvas.sendBackwards(obj);
+      });
+      canvas.renderAll();
+      const workspace = getWorkSpace();
+      workspace?.sendToBack();
+    },
     changeStrokeColor: (value: string) => {
       setStrokeColor(value);
       canvas.getActiveObjects().forEach((obj) => {
@@ -158,6 +184,7 @@ const buildEditor = ({
     strokeColor,
     strokeWidth,
     selectedObjects,
+    opacity,
 
     getActiveStrokeColor: () => {
       const selectedObject = selectedObjects[0];
@@ -191,6 +218,15 @@ const buildEditor = ({
       const value = selectedObject.get("fill") || fillColor;
       return value as string;
     },
+    getActiveOpacity: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return 1;
+      }
+      const value = selectedObject.get("opacity") || opacity;
+
+      return value;
+    },
 
     canvas,
   };
@@ -205,6 +241,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [strokeWidth, setStrokeWidth] = useState(STROKE_WIDTH);
   const [strokeDashArray, setStrokeDashArray] =
     useState<number[]>(STROKE_DASH_ARRAY);
+  const [opacity, setOpacity] = useState(OPACITY);
 
   useAutoResize({ canvas, container });
 
@@ -227,6 +264,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         strokeDashArray,
         setStrokeDashArray,
         selectedObjects,
+        opacity,
+        setOpacity,
       });
     }
     return undefined;
@@ -237,6 +276,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     strokeWidth,
     selectedObjects,
     strokeDashArray,
+    opacity,
   ]);
 
   const init = useCallback(
