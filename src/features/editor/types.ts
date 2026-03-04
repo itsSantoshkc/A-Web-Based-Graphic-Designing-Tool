@@ -58,14 +58,17 @@ export type BuildEditorProps = {
   strokeColor: string;
   selectedObjects: fabric.Object[];
   strokeWidth: number;
+  strokeDashArray: number[];
   setFillColor: (value: string) => void;
   setStrokeColor: (value: string) => void;
   setStrokeWidth: (value: number) => void;
+  setStrokeDashArray: (value: number[]) => void;
 };
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
 export const STROKE_WIDTH = 2;
+export const STROKE_DASH_ARRAY = [];
 
 export const CIRCLE_OPTIONS = {
   radius: 120,
@@ -104,14 +107,17 @@ export interface Editor {
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
   changeFillColor: (value: string) => void;
+  changeStrokeDashArray: (value: number[]) => void;
   addCircle: () => void;
   addSquare: () => void;
   addSquareFull: () => void;
   addTriangle: () => void;
   addInvertedTriangle: () => void;
   addDiamond: () => void;
-  getActiveStrokeColor: () => string;
   getActiveFillColor: () => string;
+  getActiveStrokeColor: () => string;
+  getActiveStrokeWidth: () => number;
+  getActiveStrokeDashArray: () => number[];
   fillColor: string;
   strokeColor: string;
   strokeWidth: number;
