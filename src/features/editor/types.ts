@@ -1,3 +1,4 @@
+import { ITextboxOptions } from "fabric/fabric-impl";
 import * as material from "material-colors";
 
 export const colors = [
@@ -45,6 +46,7 @@ export type ActiveTool =
   | "stroke-color"
   | "stroke-width"
   | "font"
+  | "font-bold"
   | "opacity"
   | "filter"
   | "ai"
@@ -65,13 +67,39 @@ export type BuildEditorProps = {
   setStrokeDashArray: (value: number[]) => void;
   opacity: number;
   setOpacity: (value: number) => void;
+  fontFamily: string;
+  setFontFamily: (value: string) => void;
 };
 
+export const fonts = [
+  "Arimo",
+  "Montserrat",
+  "Open Sans",
+  "Inter",
+  "Roboto",
+  "Helvetica",
+  "Tinos",
+  "Noto Serif",
+  "EB Garamond",
+  "Courier Prime",
+  "Lora",
+  "Palatino",
+  "Comfortaa",
+  "Nanum Gothic Coding",
+  "Lucida Console",
+];
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
 export const STROKE_WIDTH = 2;
 export const OPACITY = 1;
 export const STROKE_DASH_ARRAY = [];
+export const FONT_SIZE = 32;
+export const FONT_FAMILY = "Arimo";
+export const FONT_WEIGHT = 400;
+export const FONT_STYLE = "normal";
+export const LINE_THROUGH = false;
+export const UNDERLINE = false;
+export const TEXTALIGN = "left";
 
 export const CIRCLE_OPTIONS = {
   radius: 120,
@@ -106,6 +134,14 @@ export const DIAMOND_OPTIONS = {
   height: 400,
   angle: 0,
 };
+export const TEXT_OPTIONS = {
+  type: "textbox",
+  left: 100,
+  top: 100,
+  fill: FILL_COLOR,
+  fontSize: FONT_SIZE,
+  fontFamily: FONT_FAMILY,
+};
 export interface Editor {
   bringForwards: () => void;
   sendBackwards: () => void;
@@ -115,16 +151,29 @@ export interface Editor {
   addTriangle: () => void;
   addInvertedTriangle: () => void;
   addDiamond: () => void;
+  addText: (value: string, options?: ITextboxOptions) => void;
   getActiveFillColor: () => string;
   getActiveStrokeColor: () => string;
   getActiveStrokeWidth: () => number;
   getActiveStrokeDashArray: () => number[];
   getActiveOpacity: () => number;
+  getActiveFontFamily: () => string;
+  getActiveFontWeight: () => number;
+  getActiveFontStyle: () => string;
+  getActiveFontLineThrough: () => boolean;
+  geActiveFontUnderline: () => boolean;
+  getActiveTextAlign: () => string;
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
   changeFillColor: (value: string) => void;
   changeStrokeDashArray: (value: number[]) => void;
   changeOpacity: (value: number) => void;
+  changeFontFamily: (value: string) => void;
+  changeFontWeight: (value: number) => void;
+  changeFontStyle: (value: string) => void;
+  changeFontLineThrough: (value: boolean) => void;
+  changeFontUndeline: (value: boolean) => void;
+  changeTextAlign: (value: string) => void;
   fillColor: string;
   strokeColor: string;
   strokeWidth: number;

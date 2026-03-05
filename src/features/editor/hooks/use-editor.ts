@@ -9,15 +9,23 @@ import {
   Editor,
   EditorHookProps,
   FILL_COLOR,
+  FONT_FAMILY,
+  FONT_STYLE,
+  FONT_WEIGHT,
+  LINE_THROUGH,
   OPACITY,
   SQUARE_OPTIONS,
   STROKE_COLOR,
   STROKE_DASH_ARRAY,
   STROKE_WIDTH,
+  TEXT_OPTIONS,
+  TEXTALIGN,
   TRIANGLE_OPTION,
+  UNDERLINE,
 } from "../types";
 import useCanvasEvents from "./use-canvas-events";
 import { isTextType } from "../utils";
+import { ITextboxOptions } from "fabric/fabric-impl";
 
 const buildEditor = ({
   canvas,
@@ -32,6 +40,8 @@ const buildEditor = ({
   setStrokeDashArray,
   opacity,
   setOpacity,
+  fontFamily,
+  setFontFamily,
 }: BuildEditorProps): Editor => {
   const getWorkSpace = () => {
     return canvas.getObjects().find((object) => object.name === "clip");
@@ -51,13 +61,6 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
-    changeOpacity: (value: number) => {
-      setOpacity(value);
-      canvas.getActiveObjects().forEach((obj) => {
-        obj.set({ opacity: value });
-      });
-      canvas.renderAll();
-    },
     bringForwards: () => {
       canvas.getActiveObjects().forEach((obj) => {
         canvas.bringForward(obj);
@@ -74,6 +77,59 @@ const buildEditor = ({
       const workspace = getWorkSpace();
       workspace?.sendToBack();
     },
+    changeOpacity: (value: number) => {
+      setOpacity(value);
+      canvas.getActiveObjects().forEach((obj) => {
+        obj.set({ opacity: value });
+      });
+      canvas.renderAll();
+    },
+    changeFontWeight: (value: number) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        if (isTextType(obj.type)) {
+          // @ts-ignore
+          obj.set({ fontWeight: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeFontStyle: (value: string) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        if (isTextType(obj.type)) {
+          // @ts-ignore
+          obj.set({ fontStyle: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeFontLineThrough: (value: boolean) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        if (isTextType(obj.type)) {
+          // @ts-ignore
+          obj.set({ linethrough: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeFontUndeline: (value: boolean) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        if (isTextType(obj.type)) {
+          // @ts-ignore
+          obj.set({ underline: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeTextAlign: (value: string) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        if (isTextType(obj.type)) {
+          // @ts-ignore
+          obj.set({ textAlign: value });
+        }
+      });
+      canvas.renderAll();
+    },
+
     changeStrokeColor: (value: string) => {
       setStrokeColor(value);
       canvas.getActiveObjects().forEach((obj) => {
@@ -103,6 +159,16 @@ const buildEditor = ({
       setFillColor(value);
       canvas.getActiveObjects().forEach((obj) => {
         obj.set({ fill: value });
+      });
+      canvas.renderAll();
+    },
+    changeFontFamily: (value: string) => {
+      setFontFamily(value);
+      canvas.getActiveObjects().forEach((obj) => {
+        if (isTextType(obj.type)) {
+          //@ts-ignore
+          obj.set({ fontFamily: value });
+        }
       });
       canvas.renderAll();
     },
@@ -218,6 +284,66 @@ const buildEditor = ({
       const value = selectedObject.get("fill") || fillColor;
       return value as string;
     },
+    getActiveFontFamily: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return fontFamily;
+      }
+      //@ts-ignore
+      const value = selectedObject.get("fontFamily") || fontFamily;
+
+      return value;
+    },
+    getActiveFontWeight: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return FONT_WEIGHT;
+      }
+      //@ts-ignore
+      const value = selectedObject.get("fontWeight") || FONT_WEIGHT;
+
+      return value;
+    },
+    getActiveFontStyle: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return FONT_STYLE;
+      }
+      //@ts-ignore
+      const value = selectedObject.get("fontStyle") || FONT_STYLE;
+
+      return value;
+    },
+    getActiveFontLineThrough: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return LINE_THROUGH;
+      }
+      //@ts-ignore
+      const value = selectedObject.get("linethrough") || LINE_THROUGH;
+
+      return value;
+    },
+    geActiveFontUnderline: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return LINE_THROUGH;
+      }
+      //@ts-ignore
+      const value = selectedObject.get("underline") || UNDERLINE;
+
+      return value;
+    },
+    getActiveTextAlign: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return TEXTALIGN;
+      }
+      //@ts-ignore
+      const value = selectedObject.get("textAlign") || TEXTALIGN;
+
+      return value;
+    },
     getActiveOpacity: () => {
       const selectedObject = selectedObjects[0];
       if (!selectedObject) {
@@ -227,7 +353,14 @@ const buildEditor = ({
 
       return value;
     },
-
+    addText: (value, options) => {
+      const obj = new fabric.Textbox(value, {
+        ...TEXT_OPTIONS,
+        fill: fillColor,
+        ...options,
+      });
+      addToCanvas(obj);
+    },
     canvas,
   };
 };
@@ -237,6 +370,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
   const [selectedObjects, setSelectedObjects] = useState<fabric.Object[]>([]);
   const [fillColor, setFillColor] = useState(FILL_COLOR);
+  const [fontFamily, setFontFamily] = useState(FONT_FAMILY);
   const [strokeColor, setStrokeColor] = useState(STROKE_COLOR);
   const [strokeWidth, setStrokeWidth] = useState(STROKE_WIDTH);
   const [strokeDashArray, setStrokeDashArray] =
@@ -266,6 +400,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         selectedObjects,
         opacity,
         setOpacity,
+        fontFamily,
+        setFontFamily,
       });
     }
     return undefined;

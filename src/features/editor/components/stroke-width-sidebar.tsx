@@ -31,7 +31,6 @@ const StrokeWidthSidebar = ({
   };
   const widthValue = editor?.getActiveStrokeWidth() || STROKE_WIDTH;
   const typedValue = editor?.getActiveStrokeDashArray() || STROKE_DASH_ARRAY;
-  console.log(typedValue);
   return (
     <aside
       className={cn(
