@@ -54,6 +54,31 @@ export type ActiveTool =
   | "settings"
   | "templates";
 
+export const FILTER_TYPES = [
+  "none",
+  "polaroid",
+  "sepia",
+  "kodachrome",
+  "contrast",
+  "brightness",
+  "brownie",
+  "vintage",
+  "technicolor",
+  "grayscale",
+  "pixelate",
+  "invert",
+  "blur",
+  "sharpen",
+  "emboss",
+  "removecolor",
+  "blacknwhite",
+  "vibrance",
+  "blendcolor",
+  "huerotate",
+  "resize",
+  "saturation",
+  "gamma",
+];
 export type BuildEditorProps = {
   canvas: fabric.Canvas;
   selectedObjects: fabric.Object[];
@@ -166,6 +191,7 @@ export interface Editor {
   geActiveFontUnderline: () => boolean;
   getActiveTextAlign: () => string;
   getActiveFontSize: () => number;
+
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
   changeFillColor: (value: string) => void;
@@ -178,6 +204,7 @@ export interface Editor {
   changeFontUndeline: (value: boolean) => void;
   changeTextAlign: (value: string) => void;
   changeFontSize: (value: number) => void;
+  changeImageFilter: (value: string) => void;
   fillColor: string;
   strokeColor: string;
   strokeWidth: number;

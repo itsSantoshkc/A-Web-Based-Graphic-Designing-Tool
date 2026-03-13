@@ -25,7 +25,7 @@ import {
   UNDERLINE,
 } from "../types";
 import useCanvasEvents from "./use-canvas-events";
-import { isTextType } from "../utils";
+import { createFilter, isTextType } from "../utils";
 
 const buildEditor = ({
   canvas,
@@ -83,6 +83,17 @@ const buildEditor = ({
       canvas.renderAll();
       const workspace = getWorkSpace();
       workspace?.sendToBack();
+    },
+    changeImageFilter: (value: string) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        if (obj.type === "image") {
+          const imageObj = obj as fabric.Image;
+          const effect = createFilter(value);
+          imageObj.filters = effect ? [effect] : [];
+          imageObj.applyFilters();
+          canvas.renderAll();
+        }
+      });
     },
     changeOpacity: (value: number) => {
       setOpacity(value);
@@ -380,6 +391,16 @@ const buildEditor = ({
       }
       //@ts-ignore
       const value = selectedObject.get("fontSize") || FONT_SIZE;
+
+      return value;
+    },
+    getActiveImageFilters: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return [];
+      }
+      ///@ts-ignore
+      const value = selectedObject.get("filters") || [];
 
       return value;
     },
