@@ -143,6 +143,7 @@ export const TEXT_OPTIONS = {
   fontFamily: FONT_FAMILY,
 };
 export interface Editor {
+  delete: () => void;
   bringForwards: () => void;
   sendBackwards: () => void;
   addCircle: () => void;
@@ -152,6 +153,7 @@ export interface Editor {
   addInvertedTriangle: () => void;
   addDiamond: () => void;
   addText: (value: string, options?: ITextboxOptions) => void;
+  addImage: (value: string) => void;
   getActiveFillColor: () => string;
   getActiveStrokeColor: () => string;
   getActiveStrokeWidth: () => number;
@@ -163,6 +165,7 @@ export interface Editor {
   getActiveFontLineThrough: () => boolean;
   geActiveFontUnderline: () => boolean;
   getActiveTextAlign: () => string;
+  getActiveFontSize: () => number;
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
   changeFillColor: (value: string) => void;
@@ -174,6 +177,7 @@ export interface Editor {
   changeFontLineThrough: (value: boolean) => void;
   changeFontUndeline: (value: boolean) => void;
   changeTextAlign: (value: string) => void;
+  changeFontSize: (value: number) => void;
   fillColor: string;
   strokeColor: string;
   strokeWidth: number;

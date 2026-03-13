@@ -9,6 +9,7 @@ import {
   Editor,
   EditorHookProps,
   FILL_COLOR,
+  FONT_SIZE,
   FONT_FAMILY,
   FONT_STYLE,
   FONT_WEIGHT,
@@ -25,7 +26,6 @@ import {
 } from "../types";
 import useCanvasEvents from "./use-canvas-events";
 import { isTextType } from "../utils";
-import { ITextboxOptions } from "fabric/fabric-impl";
 
 const buildEditor = ({
   canvas,
@@ -61,6 +61,13 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    delete: () => {
+      canvas.getActiveObjects().forEach((obj) => {
+        canvas.remove(obj);
+      });
+      canvas.discardActiveObject();
+      canvas.renderAll();
+    },
     bringForwards: () => {
       canvas.getActiveObjects().forEach((obj) => {
         canvas.bringForward(obj);
@@ -125,6 +132,15 @@ const buildEditor = ({
         if (isTextType(obj.type)) {
           // @ts-ignore
           obj.set({ textAlign: value });
+        }
+      });
+      canvas.renderAll();
+    },
+    changeFontSize: (value: number) => {
+      canvas.getActiveObjects().forEach((obj) => {
+        if (isTextType(obj.type)) {
+          // @ts-ignore
+          obj.set({ fontSize: value });
         }
       });
       canvas.renderAll();
@@ -246,6 +262,19 @@ const buildEditor = ({
       );
       addToCanvas(object);
     },
+    addImage: (value: string) => {
+      (fabric.Image.fromURL(value, (image) => {
+        const workspace = getWorkSpace();
+
+        image.scaleToWidth(workspace?.width || 0);
+        image.scaleToHeight(workspace?.height || 0);
+
+        addToCanvas(image);
+      }),
+        {
+          crossOrigin: "anonymous",
+        });
+    },
     fillColor,
     strokeColor,
     strokeWidth,
@@ -341,6 +370,16 @@ const buildEditor = ({
       }
       //@ts-ignore
       const value = selectedObject.get("textAlign") || TEXTALIGN;
+
+      return value;
+    },
+    getActiveFontSize: () => {
+      const selectedObject = selectedObjects[0];
+      if (!selectedObject) {
+        return TEXTALIGN;
+      }
+      //@ts-ignore
+      const value = selectedObject.get("fontSize") || FONT_SIZE;
 
       return value;
     },
