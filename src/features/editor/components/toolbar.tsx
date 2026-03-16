@@ -18,6 +18,7 @@ import {
   ArrowDown,
   ArrowUp,
   ChevronDown,
+  Copy,
   Currency,
   Trash,
 } from "lucide-react";
@@ -382,6 +383,20 @@ export const Toolbar = ({
         <Hint label="Delete " side="bottom" sideOffset={5}>
           <Button onClick={() => editor?.delete()} size="icon" variant="ghost">
             <Trash className="size-4" />
+          </Button>
+        </Hint>
+      </div>
+      <div className="flex  items-center justify-center h-full">
+        <Hint label="Duplicate" side="bottom" sideOffset={5}>
+          <Button
+            onClick={() => {
+              editor?.onCopy();
+              editor?.onPaste();
+            }}
+            size="icon"
+            variant="ghost"
+          >
+            <Copy className="size-4" />
           </Button>
         </Hint>
       </div>

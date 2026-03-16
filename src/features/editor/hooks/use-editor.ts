@@ -26,6 +26,7 @@ import {
 } from "../types";
 import useCanvasEvents from "./use-canvas-events";
 import { createFilter, isTextType } from "../utils";
+import useClipboard from "./use-clipboard";
 
 const buildEditor = ({
   canvas,
@@ -42,6 +43,8 @@ const buildEditor = ({
   setOpacity,
   fontFamily,
   setFontFamily,
+  copy,
+  paste,
 }: BuildEditorProps): Editor => {
   const getWorkSpace = () => {
     return canvas.getObjects().find((object) => object.name === "clip");
@@ -61,6 +64,8 @@ const buildEditor = ({
     canvas.setActiveObject(object);
   };
   return {
+    onCopy: () => copy(),
+    onPaste: () => paste(),
     delete: () => {
       canvas.getActiveObjects().forEach((obj) => {
         canvas.remove(obj);
@@ -394,16 +399,6 @@ const buildEditor = ({
 
       return value;
     },
-    getActiveImageFilters: () => {
-      const selectedObject = selectedObjects[0];
-      if (!selectedObject) {
-        return [];
-      }
-      ///@ts-ignore
-      const value = selectedObject.get("filters") || [];
-
-      return value;
-    },
     getActiveOpacity: () => {
       const selectedObject = selectedObjects[0];
       if (!selectedObject) {
@@ -445,9 +440,15 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     clearSelectionCallback,
   });
 
+  const { copy, paste } = useClipboard({
+    canvas,
+  });
+
   const editor = useMemo(() => {
     if (canvas) {
       return buildEditor({
+        copy,
+        paste,
         canvas,
         fillColor,
         setFillColor,
@@ -466,6 +467,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
     }
     return undefined;
   }, [
+    copy,
+    paste,
     canvas,
     fillColor,
     strokeColor,

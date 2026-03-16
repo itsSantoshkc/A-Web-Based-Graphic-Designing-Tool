@@ -80,6 +80,8 @@ export const FILTER_TYPES = [
   "gamma",
 ];
 export type BuildEditorProps = {
+  copy: () => void;
+  paste: () => void;
   canvas: fabric.Canvas;
   selectedObjects: fabric.Object[];
   fillColor: string;
@@ -168,6 +170,8 @@ export const TEXT_OPTIONS = {
   fontFamily: FONT_FAMILY,
 };
 export interface Editor {
+  onCopy: () => void;
+  onPaste: () => void;
   delete: () => void;
   bringForwards: () => void;
   sendBackwards: () => void;
