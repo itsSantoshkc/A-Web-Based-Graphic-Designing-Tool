@@ -175,6 +175,8 @@ export interface Editor {
   delete: () => void;
   bringForwards: () => void;
   sendBackwards: () => void;
+  enableDrawingMode: () => void;
+  disableDrawingMode: () => void;
   addCircle: () => void;
   addSquare: () => void;
   addSquareFull: () => void;
